@@ -33,6 +33,8 @@ func main() {
 			log.Fatal(err)
 		}
 
-		do(conn) // once the client connects, it does a connection
+		go do(conn) // once the client connects, it does a connection
+		// the go before "do" ensures that the moment the request is sent it accepts it and starts again.
+		// remove it and it becomes a singlethreaded server
 	}
 }
