@@ -1,6 +1,9 @@
 # Multi-threaded TCP Server in Go from Scratch
 
-![TCP Server Demo](demo.gif)
+<p align="center">
+  <img src="demo.gif" alt="TCP Server Demo">
+    <p align="center">Demonstration of the TCP server handling requests.</p>
+</p>
 
 This is an educational project intended to help me understand how TCP servers work, using Go. If you're interested in learning how servers handle multiple client connections and process requests, you're in the right place.
 
