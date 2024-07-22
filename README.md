@@ -7,6 +7,61 @@
 
 This is an educational project intended to help me understand how TCP servers work, using Go. If you're interested in learning how servers handle multiple client connections and process requests, you're in the right place.
 
+```mermaid
+graph TD
+    A[Start] --> B[Create TCP Listener on :1729]
+    B --> C{Listener Created?}
+    C -->|No| D[Log Fatal Error and Exit]
+    C -->|Yes| E[Create Job Queue Channel]
+    E --> F[Start Worker Pool]
+    F --> G[Create Semaphore Channel]
+    G --> H[Wait for Client Connection]
+    H --> I{Connection Accepted?}
+    I -->|No| J[Log Accept Error]
+    J --> H
+    I -->|Yes| K[Acquire Semaphore Slot]
+    K --> L[Send Connection to Job Queue]
+    L --> M[Release Semaphore Slot]
+    M --> H
+    
+    subgraph "Worker Pool"
+    N[Worker 1]
+    O[Worker 2]
+    P[Worker ...]
+    Q[Worker 10]
+    end
+    
+    N & O & P & Q --> R[Receive Connection from Job Queue]
+    R --> S[Process Connection]
+    
+    subgraph "Connection Processing"
+    S --> T[Set Connection Deadline]
+    T --> U[Read Request]
+    U --> V[Process Request]
+    V --> W[Write Response]
+    W --> X[Close Connection]
+    end
+    
+    subgraph "Concurrency Model"
+    Y[Worker Pool: 10 Goroutines]
+    Z[Max Concurrent Connections: 10]
+    AA[Job Queue: Buffered Channel]
+    AB[Semaphore: Buffered Channel]
+    end
+    
+    subgraph "Input/Output"
+    AC[Input: TCP Connections]
+    AD[Output: HTTP Responses]
+    end
+    
+    subgraph "Key Components"
+    AE[net.Listener]
+    AF[net.Conn]
+    AG[Goroutines]
+    AH[Channels]
+    end
+```
+
 ## What's This All About?
 
 Imagine a busy cafe. When you walk in, a barista takes your order, processes it, and eventually hands you your coffee. Now, picture this cafe as a server and each customer as a client. Our server (the cafe) can handle multiple clients (customers) at once, thanks to some clever coding.
